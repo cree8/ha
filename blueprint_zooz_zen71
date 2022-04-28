@@ -1,0 +1,161 @@
+blueprint:
+  name: Zooz Zen(zwave_js)
+  description: Create automations for the Zooz switches
+  source_url: https://github.com/cree8/zooz_switches/blob/main/components/automation/blueprints/zooz_zen_blueprint_template_zwave_js.yaml
+  domain: automation
+  input:
+    zooz_switch:
+      name: Zooz Switch
+      description: List of available Zooz devices to configure.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Zooz
+          multiple: false
+    target_device:
+      name: Target Device
+      description: The main device that will have its state changed by this switch
+      selector:
+        entity:
+          domain: light
+          multiple: false
+    all_lights:
+      name: All Lights
+      description: All lights within the area of the switch
+      selector:
+        entity:
+          domain: light
+          multiple: false
+    up_1x:
+      name: Press On (1x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_2x:
+      name: Press On (2x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_3x:
+      name: Press On (3x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_4x:
+      name: Press On (4x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_5x:
+      name: Press On (5x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_held:
+      name: Press On (held)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    up_released:
+      name: Release On
+      description: Action to run on button press.
+      default: []
+      selector:
+        action:
+    down_1x:
+      name: Press Off (1x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    down_2x:
+      name: Press Off (2x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    down_3x:
+      name: Press Off (3x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    down_4x:
+      name: Press Off (4x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    down_5x:
+      name: Press Off (5x)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    down_held:
+      name: Press Off (held)
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+    down_released:
+      name: Release Off
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: 
+mode: single
+max_exceeded: silent
+variables:
+  device_id: !input 'zooz_switch'
+trigger:
+- platform: event
+  event_type: zwave_js_value_notification
+  event_data:
+    command_class_name: Central Scene
+    device_id: !input 'zooz_switch'
+action:
+- variables:
+    scene_id: '{{ trigger.event.data.label }}'
+    scene_value: '{{ trigger.event.data.value }}'
+- choose:
+  - conditions: '{{ scene_id == ''Scene 001'' }}'
+    sequence:
+    - choose:
+      - conditions: '{{ scene_value == ''KeyPressed'' }}'
+        sequence: !input 'down_1x'
+      - conditions: '{{ scene_value == ''KeyPressed2x'' }}'
+        sequence: !input 'down_2x'
+      - conditions: '{{ scene_value == ''KeyPressed3x'' }}'
+        sequence: !input 'down_3x'
+      - conditions: '{{ scene_value == ''KeyPressed4x'' }}'
+        sequence: !input 'down_4x'
+      - conditions: '{{ scene_value == ''KeyPressed5x'' }}'
+        sequence: !input 'down_5x'
+      - conditions: '{{ scene_value == ''KeyHeldDown'' }}'
+        sequence: !input 'down_held'
+      - conditions: '{{ scene_value == ''KeyReleased'' }}'
+        sequence: !input 'down_released'
+  - conditions: '{{ scene_id == ''Scene 002'' }}'
+    sequence:
+    - choose:
+      - conditions: '{{ scene_value == ''KeyPressed'' }}'
+        sequence: !input 'up_1x'
+      - conditions: '{{ scene_value == ''KeyPressed2x'' }}'
+        sequence: !input 'up_2x'
+      - conditions: '{{ scene_value == ''KeyPressed3x'' }}'
+        sequence: !input 'up_3x'
+      - conditions: '{{ scene_value == ''KeyPressed4x'' }}'
+        sequence: !input 'up_4x'
+      - conditions: '{{ scene_value == ''KeyPressed5x'' }}'
+        sequence: !input 'up_5x'
+      - conditions: '{{ scene_value == ''KeyHeldDown'' }}'
+        sequence: !input 'up_held'
+      - conditions: '{{ scene_value == ''KeyReleased'' }}'
+        sequence: !input 'up_released'
