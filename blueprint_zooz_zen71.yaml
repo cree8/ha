@@ -125,7 +125,7 @@ action:
     scene_id: '{{ trigger.event.data.label }}'
     scene_value: '{{ trigger.event.data.value }}'
 - choose:
-  - conditions: '{{ scene_id == ''Scene 001'' }}'
+  - conditions: '{{ scene_id == ''Scene 002'' }}'
     sequence:
     - choose:
       - conditions: '{{ scene_value == ''KeyPressed'' }}'
@@ -142,7 +142,7 @@ action:
         sequence: !input 'down_held'
       - conditions: '{{ scene_value == ''KeyReleased'' }}'
         sequence: !input 'down_released'
-  - conditions: '{{ scene_id == ''Scene 002'' }}'
+  - conditions: '{{ scene_id == ''Scene 001'' }}'
     sequence:
     - choose:
       - conditions: '{{ scene_value == ''KeyPressed'' }}'
